@@ -10,7 +10,6 @@ class UserSerializer(serializers.ModelSerializer):
     
     
 
-
 class CategorieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categorie

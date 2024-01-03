@@ -172,7 +172,11 @@ REGISTER_EMAIL_VERIFICATION_URL = '/verify-email-registration/'
 # settings.py
 VERIFICATION_FROM_EMAIL = 'elotmanimouad89@gmail.com'
 
-
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
 
 
 

@@ -23,7 +23,20 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     queryset = get_user_model().objects.all()
 
+# check if the user is superUser or not
+class IsSuperuserView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        user = request.user
+        return Response({'is_superuser': user.is_superuser})
 
+# logout
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request, *args, **kwargs):
+        user_token = Token.objects.get(user=request.user)
+        user_token.delete()
+        return Response({"detail": "Successfully logged out."}, status=status.HTTP_200_OK)
 
 #-----------------------------------------------------------------------------------------Crud Categorie
 
@@ -149,6 +162,36 @@ class UserUpdate(generics.RetrieveUpdateDestroyAPIView):
         self.perform_update(serializer)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+
+#-----------------------------------------------------------------------------------------Crud Dishes
+#--------- List Dishes
+class DishesAllListView(generics.ListAPIView):
+    queryset = Plat.objects.all()
+    serializer_class = PlatSerializer
+    authentication_classes = []
+    permission_classes = []
+
+#--------- Delete Dishe
+class DeleteRecipe(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Plat.objects.all()
+    serializer_class = PlatSerializer
+    authentication_classes = []  
+    permission_classes = []  
+
+#--------- Create Dishe
+class DisheListCreateView(generics.ListCreateAPIView):
+    queryset = Plat.objects.all()
+    serializer_class = PlatSerializer
+    authentication_classes = [] 
+    permission_classes = []
+
+#--------- Update Dishe
+class DisheUpdate(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Plat.objects.all()
+    serializer_class = PlatSerializer
+    authentication_classes = []  # Disable authentication for this view
+    permission_classes = []  # Disable permission checks (public access)
 
 
 

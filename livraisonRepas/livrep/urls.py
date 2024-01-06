@@ -16,6 +16,7 @@ urlpatterns = [
    path('update_user/<int:pk>/', UserUpdate.as_view(), name='update_user'),
    path('is_superuser/', IsSuperuserView.as_view(), name='is_superuser'),
    path('logout/', LogoutView.as_view(), name='logout'),
+   path('user_profile/',user_profile, name="user_profile"),
    
    # Dishes
    path('list_dishes/', DishesAllListView.as_view(), name='list_dishes'),

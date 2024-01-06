@@ -196,8 +196,16 @@ class DisheListCreateView(generics.ListCreateAPIView):
 class DisheUpdate(generics.RetrieveUpdateDestroyAPIView):
     queryset = Plat.objects.all()
     serializer_class = PlatSerializer
-    authentication_classes = []  # Disable authentication for this view
-    permission_classes = []  # Disable permission checks (public access)
+    authentication_classes = [] 
+    permission_classes = [] 
+
+#-----------------------------------------------------------------------------------------Crud Comment
+#--------- Create Comment
+class CommentListCreateView(generics.ListCreateAPIView):
+    queryset = Commentaire.objects.all()
+    serializer_class = CommentaireSerializer
+    authentication_classes = [] 
+    permission_classes = []
 
 
 

@@ -23,4 +23,7 @@ urlpatterns = [
    path('delete_recipe/<int:pk>/', DeleteRecipe.as_view(), name='delete_recipe'),
    path('create_dishe/', DisheListCreateView.as_view(), name='create_dishe'),
    path('update_dishe/<int:pk>/', DisheUpdate.as_view(), name='update_dishe'),
+
+   # Comment
+   path('create_comment/', CommentListCreateView.as_view(), name='create_comment'),
 ]

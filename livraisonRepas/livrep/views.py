@@ -170,6 +170,14 @@ def user_profile(request):
     serializer = UserSerializer(user)
     return Response(serializer.data)
 
+class AuthenticatedUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user  # Get the authenticated user
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 #-----------------------------------------------------------------------------------------Crud Dishes
 #--------- List Dishes
 class DishesAllListView(generics.ListAPIView):
@@ -199,6 +207,21 @@ class DisheUpdate(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [] 
     permission_classes = [] 
 
+#--------- Search
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def search_dishes(request):
+    name_query = request.GET.get('name', '')
+
+    if not name_query :
+        return Response({"detail": "Please provide a title or categorie for the search."}, status=400)
+
+    queryset = Plat.objects.all()
+    queryset = queryset.filter(name__icontains=name_query)
+
+    serializer = PlatSerializer(queryset, many=True)
+    return Response(serializer.data)
+
 #-----------------------------------------------------------------------------------------Crud Comment
 #--------- Create Comment
 class CommentListCreateView(generics.ListCreateAPIView):
@@ -207,7 +230,54 @@ class CommentListCreateView(generics.ListCreateAPIView):
     authentication_classes = [] 
     permission_classes = []
 
+#-----------------------------------------------------------------------------------------Crud Favorite
+#--------- Create Favorite
+class FavoriteListCreateView(generics.ListCreateAPIView):
+    queryset = Ranking.objects.all()
+    serializer_class = RankingSerializer
+    authentication_classes = [] 
+    permission_classes = []
 
+#--------- List Favorite
+class UserRankingView(generics.ListAPIView):
+    serializer_class = RankingSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Ranking.objects.filter(user=user).order_by('rank')
+
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+#--------- Check
+def check_favorite(request, user_id, dish_id):
+    user = get_object_or_404(User, id=user_id)
+    try:
+        favorite = Ranking.objects.get(user=user, plat=dish_id)
+        return JsonResponse({'message': 'Dish is a favorite'}, status=200)
+    except Ranking.DoesNotExist:
+        return JsonResponse({'message': 'Dish is not a favorite'}, status=404)
+
+#--------- Get data from id
+class RankingWithPlatView(APIView):
+    def get_queryset(self):
+        return Ranking.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        rankings = self.get_queryset()
+        ranking_serializer = RankingSerializer(rankings, many=True)
+
+        data = []
+
+        for ranking_data in ranking_serializer.data:
+            plat_id = ranking_data['plat']
+            plat = Plat.objects.get(id=plat_id)
+            plat_serializer = PlatSerializer(plat)
+
+            ranking_data['plat'] = plat_serializer.data
+            data.append(ranking_data)
+
+        return Response(data, status=status.HTTP_200_OK)
 
 
 

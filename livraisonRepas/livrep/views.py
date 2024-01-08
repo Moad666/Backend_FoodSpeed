@@ -247,6 +247,14 @@ class UserRankingView(generics.ListAPIView):
         user = self.request.user
         return Ranking.objects.filter(user=user).order_by('rank')
 
+#--------- Delete Favorite
+class DeleteFavorite(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Ranking.objects.all()
+    serializer_class = RankingSerializer
+    authentication_classes = []  
+    permission_classes = []
+
+
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 #--------- Check
@@ -280,6 +288,39 @@ class RankingWithPlatView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
 
+#-----------------------------------------------------------------------------------------Crud Commande
+#--------- Create Commande
+class CommandeListCreateView(generics.ListCreateAPIView):
+    queryset = Commande.objects.all()
+    serializer_class = CommandeSerializer
+    authentication_classes = [] 
+    permission_classes = []
+
+#--------- Delete Command
+class DeleteCommand(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Commande.objects.all()
+    serializer_class = CommandeSerializer
+    authentication_classes = []  
+    permission_classes = []  
 
 
+#--------- Get data from id
+class CommandWithPlatView(APIView):
+    def get_queryset(self):
+        return Commande.objects.all()
 
+    def get(self, request, *args, **kwargs):
+        rankings = self.get_queryset()
+        ranking_serializer = CommandeSerializer(rankings, many=True)
+
+        data = []
+
+        for ranking_data in ranking_serializer.data:
+            plat_id = ranking_data['plat']
+            plat = Plat.objects.get(id=plat_id)
+            plat_serializer = PlatSerializer(plat)
+
+            ranking_data['plat'] = plat_serializer.data
+            data.append(ranking_data)
+
+        return Response(data, status=status.HTTP_200_OK)

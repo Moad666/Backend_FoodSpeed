@@ -80,7 +80,6 @@ class Commande(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
-
 class Commentaire(models.Model):
     comment = models.CharField(max_length=250)
     user = models.ForeignKey(User,on_delete=models.CASCADE)

@@ -34,4 +34,11 @@ urlpatterns = [
    path('list_ranking/', UserRankingView.as_view(), name='list_ranking'),
    path('list_ranking_with_plat/', RankingWithPlatView.as_view(), name='list_ranking_with_plat'),
    path('check_favorite/<int:user_id>/<int:dish_id>/', check_favorite, name='check_favorite'),
+   path('delete_favorite/<int:pk>/', DeleteFavorite.as_view(), name='delete_favorite'),
+
+   # Commande
+   path('create_commande/', CommandeListCreateView.as_view(), name='create_commande'),
+   path('delete_commande/<int:pk>/', DeleteCommand.as_view(), name='delete_commande'),
+   path('list_command_with_plat/', CommandWithPlatView.as_view(), name='list_command_with_plat'),
+
 ]
